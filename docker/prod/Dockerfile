@@ -49,9 +49,7 @@ RUN rm /tmp/legacy-nat.conf
 # Install agent
 # COPY --from=devimg \
 COPY \
-    /work/release/agentctl \
-    /work/release/vpp-agent \
-    /work/release/vpp-agent-init \
+    /work/release/vpp-agent* \
  /bin/
 
 # Final image
