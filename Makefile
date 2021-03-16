@@ -325,7 +325,7 @@ dev-image: ## Build developer image
 	  ./docker/dev/build.sh
 
 prod-image: ## Build production image
-	@echo "# building prod image"
+	@echo "# building prod image: $(IMAGE_TAG) version: $(VPP_VERSION)"
 	IMAGE_TAG=$(IMAGE_TAG) VPP_VERSION=$(VPP_VERSION) ./docker/prod/build.sh
 
 
