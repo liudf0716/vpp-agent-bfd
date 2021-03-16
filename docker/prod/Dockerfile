@@ -1,4 +1,4 @@
-ARG DEV_IMG=dev_vpp_agent
+ARG DEV_IMG=ligato/vpp-base:20.09
 FROM ${DEV_IMG} as devimg
 
 FROM ubuntu:18.04 as base
