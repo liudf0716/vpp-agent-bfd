@@ -14,7 +14,6 @@ esac
 echo "==============================================="
 echo " Image: ${IMAGE_TAG:=prod_vpp_agent}"
 echo "==============================================="
-echo " - dev image: ${DEV_IMG:=dev_vpp_agent}"
 echo " - VPP version: ${VPP_VERSION}"
 echo "==============================================="
 
