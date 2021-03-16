@@ -1,5 +1,5 @@
-# ARG DEV_IMG=dev_vpp_agent
-# FROM ${DEV_IMG} as devimg
+ARG DEV_IMG=dev_vpp_agent
+FROM ${DEV_IMG} as devimg
 
 FROM ubuntu:18.04 as base
 
@@ -20,8 +20,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  	&& rm -rf /var/lib/apt/lists/*
 
 # install vpp
-# COPY --from=devimg /vpp/*.deb /opt/vpp/
-COPY /work/release/*.deb /opt/vpp/
+COPY --from=devimg /vpp/*.deb /opt/vpp/
+
+# install vpp ext depend
+COPY *.deb /opt/vpp/
 
 RUN set -eux; \
 	cd /opt/vpp/; \
@@ -47,9 +49,10 @@ RUN bash -c "if [[ \"$VPP_VERSION\" < "2101" ]]; then cat /tmp/legacy-nat.conf >
 RUN rm /tmp/legacy-nat.conf
 
 # Install agent
-# COPY --from=devimg \
 COPY \
-    /work/release/vpp-agent* \
+    vpp-agent \
+    vpp-agent-init \
+    vpp-agent-init \
  /bin/
 
 # Final image
