@@ -52,7 +52,7 @@ RUN rm /tmp/legacy-nat.conf
 COPY \
     vpp-agent \
     vpp-agent-init \
-    vpp-agent-init \
+    agentctl \
  /bin/
 
 # Final image
