@@ -20,7 +20,6 @@ echo "==============================================="
 set -x
 
 docker build -f Dockerfile \
-    --build-arg DEV_IMG=${DEV_IMG} \
     --build-arg VPP_VERSION=${VPP_VERSION} \
 	  --tag ${IMAGE_TAG} \
  ${DOCKER_BUILD_ARGS-} .
