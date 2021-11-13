@@ -21,6 +21,7 @@ import (
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/acl"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/af_packet"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/arp"
+	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/bfd"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/bond"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/dhcp"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/flowprobe"
@@ -53,7 +54,7 @@ import (
 )
 
 // Version is used to identify VPP binapi version
-const Version = "20.09-rc0"
+const Version = "20.09"
 
 func init() {
 	binapi.Versions[Version] = binapi.VersionMsgs{
@@ -80,6 +81,7 @@ func init() {
 			vpe.AllMessages,
 			vxlan.AllMessages,
 			vxlan_gpe.AllMessages,
+			bfd.AllMessages,
 		),
 		Plugins: vpp.Messages(
 			abf.AllMessages,
@@ -97,7 +99,7 @@ func init() {
 	}
 }
 
-//go:generate -command binapigen binapi-generator --no-version-info --output-dir=.
+//go:generate -command binapigen binapi-generator  --output-dir=.
 //go:generate binapigen --input-file=$VPP_API_DIR/core/af_packet.api.json
 //go:generate binapigen --input-file=$VPP_API_DIR/core/arp.api.json
 //go:generate binapigen --input-file=$VPP_API_DIR/core/bond.api.json
@@ -132,3 +134,4 @@ func init() {
 //go:generate binapigen --input-file=$VPP_API_DIR/plugins/vmxnet3.api.json
 //go:generate binapigen --input-file=$VPP_API_DIR/plugins/wireguard.api.json
 //go:generate binapigen --input-file=$VPP_API_DIR/plugins/vrrp.api.json
+//go:generate binapigen --input-file=$VPP_API_DIR/core/bfd.api.json

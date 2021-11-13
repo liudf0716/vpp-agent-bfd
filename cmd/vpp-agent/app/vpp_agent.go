@@ -40,6 +40,7 @@ import (
 	"go.ligato.io/vpp-agent/v3/plugins/telemetry"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/abfplugin"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/aclplugin"
+	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ipfixplugin"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ipsecplugin"
@@ -183,6 +184,7 @@ type VPP struct {
 	STNPlugin   *stnplugin.STNPlugin
 	SRPlugin    *srplugin.SRPlugin
 	WgPlugin    *wireguardplugin.WgPlugin
+	BFDPlugin   *bfdplugin.BFDPlugin
 }
 
 func DefaultVPP() VPP {
@@ -199,6 +201,7 @@ func DefaultVPP() VPP {
 		STNPlugin:   &stnplugin.DefaultPlugin,
 		SRPlugin:    &srplugin.DefaultPlugin,
 		WgPlugin:    &wireguardplugin.DefaultPlugin,
+		BFDPlugin:   &bfdplugin.DefaultPlugin,
 	}
 }
 
