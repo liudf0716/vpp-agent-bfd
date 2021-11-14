@@ -39,6 +39,7 @@ import (
 	natvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/natplugin/vppcalls"
 	puntvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/puntplugin/vppcalls"
 	wireguardvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/wireguardplugin/vppcalls"
+	bfdvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
 	rpc "go.ligato.io/vpp-agent/v3/proto/ligato/configurator"
 	"go.ligato.io/vpp-agent/v3/proto/ligato/vpp"
 )
@@ -154,6 +155,10 @@ func (p *Plugin) initHandlers() (err error) {
 	p.configurator.wireguardHandler = wireguardvppcalls.CompatibleWgVppHandler(p.VPP, ifIndexes, p.Log)
 	if p.configurator.wireguardHandler == nil {
 		p.Log.Info("VPP Wg handler is not available, it will be skipped")
+	}
+	p.configurator.bfdHandler = bfdvppcalls.CompatibleBFDVppHandler(p.VPP, p.Log)
+	if p.configurator.bfdHandler == nil {
+		p.Log.Info("VPP Bfd handler is not available, it will be skipped")
 	}
 
 	// Linux handlers

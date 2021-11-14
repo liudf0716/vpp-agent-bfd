@@ -31,6 +31,7 @@ import (
 	natvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/natplugin/vppcalls"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/puntplugin/vppcalls"
 	wireguardvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/wireguardplugin/vppcalls"
+	bfdvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
 	rpc "go.ligato.io/vpp-agent/v3/proto/ligato/configurator"
 	linux_interfaces "go.ligato.io/vpp-agent/v3/proto/ligato/linux/interfaces"
 	linux_l3 "go.ligato.io/vpp-agent/v3/proto/ligato/linux/l3"
@@ -43,6 +44,7 @@ import (
 	vpp_nat "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/nat"
 	vpp_punt "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/punt"
 	vpp_wg "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/wireguard"
+	vpp_bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
 )
 
 type dumpService struct {
@@ -54,11 +56,12 @@ type dumpService struct {
 	l3Handler    l3vppcalls.L3VppAPI
 	ipsecHandler ipsecvppcalls.IPSecVPPRead
 	// plugins
-	aclHandler  aclvppcalls.ACLVppRead
-	abfHandler  abfvppcalls.ABFVppRead
-	natHandler  natvppcalls.NatVppRead
-	puntHandler vppcalls.PuntVPPRead
+	aclHandler       aclvppcalls.ACLVppRead
+	abfHandler       abfvppcalls.ABFVppRead
+	natHandler       natvppcalls.NatVppRead
+	puntHandler      vppcalls.PuntVPPRead
 	wireguardHandler wireguardvppcalls.WgVppRead
+	bfdHandler	 bfdvppcalls.BFDVppRead
 
 	// Linux handlers
 	linuxIfHandler iflinuxcalls.NetlinkAPIRead
@@ -168,7 +171,12 @@ func (svc *dumpService) Dump(ctx context.Context, req *rpc.DumpRequest) (*rpc.Du
 		svc.log.Errorf("DumpWgPeers failed: %v", err)
 		return nil, err
 	}
-
+	dump.VppConfig.Bfds, err = svc.DumpBfds()
+	if err != nil {
+		svc.log.Errorf("DumpBfds failed: %v", err)
+		return nil, err
+	}
+	dump.VppConfig.B
 	// -----
 	// Linux
 	// -----
@@ -487,6 +495,21 @@ func (svc *dumpService) DumpWgPeers() (peers []*vpp_wg.Peer, err error) {
 	}
 	return
 }
+
+func (svc *dumpService) DumpBfds() (bfds []*vpp_bfd.SingleHopBFD, err error) {
+	if svc.bfdHandler == nil {
+		// handler is not available
+		return nil, nil
+	}
+
+	_details, err := svc.bfdHandler.DumpBfdSingleHop()
+	if err != nil {
+		return nil, err
+	}
+
+	return _details.Bfd, nil
+}
+
 
 // DumpLinuxInterfaces reads linux interfaces and returns them as an *LinuxInterfaceResponse. If reading ends up with error,
 // only error is send back in response
