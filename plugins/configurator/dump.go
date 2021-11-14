@@ -24,6 +24,7 @@ import (
 	l3linuxcalls "go.ligato.io/vpp-agent/v3/plugins/linux/l3plugin/linuxcalls"
 	abfvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/abfplugin/vppcalls"
 	aclvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/aclplugin/vppcalls"
+	bfdvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
 	ifvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin/vppcalls"
 	ipsecvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/ipsecplugin/vppcalls"
 	l2vppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/l2plugin/vppcalls"
@@ -31,12 +32,12 @@ import (
 	natvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/natplugin/vppcalls"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/puntplugin/vppcalls"
 	wireguardvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/wireguardplugin/vppcalls"
-	bfdvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
 	rpc "go.ligato.io/vpp-agent/v3/proto/ligato/configurator"
 	linux_interfaces "go.ligato.io/vpp-agent/v3/proto/ligato/linux/interfaces"
 	linux_l3 "go.ligato.io/vpp-agent/v3/proto/ligato/linux/l3"
 	vpp_abf "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/abf"
 	vpp_acl "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/acl"
+	vpp_bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
 	vpp_interfaces "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/interfaces"
 	vpp_ipsec "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/ipsec"
 	vpp_l2 "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/l2"
@@ -44,7 +45,6 @@ import (
 	vpp_nat "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/nat"
 	vpp_punt "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/punt"
 	vpp_wg "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/wireguard"
-	vpp_bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
 )
 
 type dumpService struct {
@@ -61,7 +61,7 @@ type dumpService struct {
 	natHandler       natvppcalls.NatVppRead
 	puntHandler      vppcalls.PuntVPPRead
 	wireguardHandler wireguardvppcalls.WgVppRead
-	bfdHandler	 bfdvppcalls.BFDVppRead
+	bfdHandler       bfdvppcalls.BFDVppRead
 
 	// Linux handlers
 	linuxIfHandler iflinuxcalls.NetlinkAPIRead
@@ -176,7 +176,7 @@ func (svc *dumpService) Dump(ctx context.Context, req *rpc.DumpRequest) (*rpc.Du
 		svc.log.Errorf("DumpBfds failed: %v", err)
 		return nil, err
 	}
-	dump.VppConfig.B
+
 	// -----
 	// Linux
 	// -----
@@ -502,14 +502,13 @@ func (svc *dumpService) DumpBfds() (bfds []*vpp_bfd.SingleHopBFD, err error) {
 		return nil, nil
 	}
 
-	_details, err := svc.bfdHandler.DumpBfdSingleHop()
+	_, err = svc.bfdHandler.DumpBfdSingleHop()
 	if err != nil {
 		return nil, err
 	}
 
-	return _details.Bfd, nil
+	return nil, nil
 }
-
 
 // DumpLinuxInterfaces reads linux interfaces and returns them as an *LinuxInterfaceResponse. If reading ends up with error,
 // only error is send back in response

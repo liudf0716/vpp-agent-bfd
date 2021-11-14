@@ -6,6 +6,7 @@ option go_package = "go.ligato.io/vpp-agent/v3/proto/ligato/vpp";
 
 import "ligato/vpp/abf/abf.proto";
 import "ligato/vpp/acl/acl.proto";
+import "ligato/vpp/bfd/bfd.proto";
 import "ligato/vpp/ipfix/ipfix.proto";
 import "ligato/vpp/ipfix/flowprobe.proto";
 import "ligato/vpp/interfaces/interface.proto";
@@ -33,6 +34,7 @@ message ConfigData {
 
     repeated acl.ACL acls = 20;
     repeated abf.ABF abfs = 21;
+    repeated bfd.SingleHopBFD bfds = 22;
 
     repeated l2.BridgeDomain bridge_domains = 30;
     repeated l2.FIBEntry fibs = 31;

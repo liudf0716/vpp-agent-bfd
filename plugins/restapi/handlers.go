@@ -70,6 +70,16 @@ func (p *Plugin) registerACLHandlers() {
 	})
 }
 
+// Registers BFD REST handler
+func (p *Plugin) registerBFDHandlers() {
+	p.registerHTTPHandler(resturl.BFD, GET, func() (interface{}, error) {
+		if p.bfdHandler == nil {
+			return nil, ErrHandlerUnavailable
+		}
+		return p.bfdHandler.DumpBfdSingleHop()
+	})
+}
+
 // Registers interface REST handlers
 func (p *Plugin) registerInterfaceHandlers() {
 	// GET all interfaces

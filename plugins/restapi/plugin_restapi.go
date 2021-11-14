@@ -36,6 +36,7 @@ import (
 	abfvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/abfplugin/vppcalls"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/aclplugin"
 	aclvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/aclplugin/vppcalls"
+	bfdvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin"
 	ifvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin/vppcalls"
 	ipsecvppcalls "go.ligato.io/vpp-agent/v3/plugins/vpp/ipsecplugin/vppcalls"
@@ -68,14 +69,15 @@ type Plugin struct {
 	vpeHandler  vpevppcalls.VppCoreAPI
 	teleHandler telemetryvppcalls.TelemetryVppAPI
 	// VPP Handlers
-	abfHandler   abfvppcalls.ABFVppRead
-	aclHandler   aclvppcalls.ACLVppRead
-	ifHandler    ifvppcalls.InterfaceVppRead
-	natHandler   natvppcalls.NatVppRead
-	l2Handler    l2vppcalls.L2VppAPI
-	l3Handler    l3vppcalls.L3VppAPI
-	ipSecHandler ipsecvppcalls.IPSecVPPRead
-	puntHandler  puntvppcalls.PuntVPPRead
+	abfHandler       abfvppcalls.ABFVppRead
+	aclHandler       aclvppcalls.ACLVppRead
+	bfdHandler       bfdvppcalls.BFDVppRead
+	ifHandler        ifvppcalls.InterfaceVppRead
+	natHandler       natvppcalls.NatVppRead
+	l2Handler        l2vppcalls.L2VppAPI
+	l3Handler        l3vppcalls.L3VppAPI
+	ipSecHandler     ipsecvppcalls.IPSecVPPRead
+	puntHandler      puntvppcalls.PuntVPPRead
 	wireguardHandler wireguardvppcalls.WgVppRead
 	// Linux handlers
 	linuxIfHandler iflinuxcalls.NetlinkAPIRead
@@ -173,6 +175,10 @@ func (p *Plugin) Init() (err error) {
 	if p.wireguardHandler == nil {
 		p.Log.Info("Wireguard handler is not available, it will be skipped")
 	}
+	p.bfdHandler = bfdvppcalls.CompatibleBFDVppHandler(p.VPP, ifIndexes, p.Log)
+	if p.bfdHandler == nil {
+		p.Log.Info("Bfd handler is not available, it will be skipped")
+	}
 
 	// Linux handlers
 	p.linuxIfHandler = iflinuxcalls.NewNetLinkHandler(p.NsPlugin, linuxIfIndexes, p.ServiceLabel.GetAgentPrefix(),
@@ -203,6 +209,7 @@ func (p *Plugin) AfterInit() (err error) {
 	// plugins
 	p.registerABFHandler()
 	p.registerACLHandlers()
+	p.registerBFDHandlers()
 	p.registerNATHandlers()
 	p.registerPuntHandlers()
 	// Linux handlers
@@ -296,6 +303,7 @@ func getPermissionsGroups() []*access.PermissionGroup {
 			newPermission(resturl.ABF, GET),
 			newPermission(resturl.ACLIP, GET),
 			newPermission(resturl.ACLMACIP, GET),
+			newPermission(resturl.BFD, GET),
 			newPermission(resturl.Interface, GET),
 			newPermission(resturl.Loopback, GET),
 			newPermission(resturl.Ethernet, GET),

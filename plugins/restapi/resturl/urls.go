@@ -49,6 +49,12 @@ const (
 	ACLMACIP = "/dump/vpp/v2/acl/macip"
 )
 
+// VPP BFD
+const (
+	// REST BFD 
+	BFD = "/dump/vpp/v2/bfd"
+)
+
 // VPP Interfaces
 const (
 	// Interface is rest interface path
