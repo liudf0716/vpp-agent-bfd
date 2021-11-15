@@ -20,7 +20,7 @@ message SingleHopBFD {
         }
         Authentication authentication = 11;   /* authentication of the session (if empty, authentication is disabled) */
     }
-    repeated Session sessions = 1; /* list of single hop BFD sessions */
+    Session session = 1; /*  BFD session */
 
     message Key {
         string name = 1;                            /* Unique name to identify this BFD auth key */
@@ -33,7 +33,7 @@ message SingleHopBFD {
         AuthenticationType authentication_type = 4;  /* authentication type */
         string secret = 5;                           /* shared secret (hex data) */
     }
-    repeated Key keys = 2; /* list of the available authentication keys */
+    Key key = 2; /* authentication key */
 
     message EchoFunction {
         string name = 1;

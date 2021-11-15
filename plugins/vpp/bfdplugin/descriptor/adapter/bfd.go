@@ -12,7 +12,7 @@ import (
 
 type BFDKVWithMetadata struct {
 	Key      string
-	Value    *vpp_bfd.SingleHopBFD_Session
+	Value    *vpp_bfd.SingleHopBFD
 	Metadata interface{}
 	Origin   ValueOrigin
 }
@@ -24,19 +24,19 @@ type BFDDescriptor struct {
 	KeySelector          KeySelector
 	ValueTypeName        string
 	KeyLabel             func(key string) string
-	ValueComparator      func(key string, oldValue, newValue *vpp_bfd.SingleHopBFD_Session) bool
+	ValueComparator      func(key string, oldValue, newValue *vpp_bfd.SingleHopBFD) bool
 	NBKeyPrefix          string
 	WithMetadata         bool
 	MetadataMapFactory   MetadataMapFactory
-	Validate             func(key string, value *vpp_bfd.SingleHopBFD_Session) error
-	Create               func(key string, value *vpp_bfd.SingleHopBFD_Session) (metadata interface{}, err error)
-	Delete               func(key string, value *vpp_bfd.SingleHopBFD_Session, metadata interface{}) error
-	Update               func(key string, oldValue, newValue *vpp_bfd.SingleHopBFD_Session, oldMetadata interface{}) (newMetadata interface{}, err error)
-	UpdateWithRecreate   func(key string, oldValue, newValue *vpp_bfd.SingleHopBFD_Session, metadata interface{}) bool
+	Validate             func(key string, value *vpp_bfd.SingleHopBFD) error
+	Create               func(key string, value *vpp_bfd.SingleHopBFD) (metadata interface{}, err error)
+	Delete               func(key string, value *vpp_bfd.SingleHopBFD, metadata interface{}) error
+	Update               func(key string, oldValue, newValue *vpp_bfd.SingleHopBFD, oldMetadata interface{}) (newMetadata interface{}, err error)
+	UpdateWithRecreate   func(key string, oldValue, newValue *vpp_bfd.SingleHopBFD, metadata interface{}) bool
 	Retrieve             func(correlate []BFDKVWithMetadata) ([]BFDKVWithMetadata, error)
 	IsRetriableFailure   func(err error) bool
-	DerivedValues        func(key string, value *vpp_bfd.SingleHopBFD_Session) []KeyValuePair
-	Dependencies         func(key string, value *vpp_bfd.SingleHopBFD_Session) []Dependency
+	DerivedValues        func(key string, value *vpp_bfd.SingleHopBFD) []KeyValuePair
+	Dependencies         func(key string, value *vpp_bfd.SingleHopBFD) []Dependency
 	RetrieveDependencies []string /* descriptor name */
 }
 
@@ -213,8 +213,8 @@ func (da *BFDDescriptorAdapter) Dependencies(key string, value proto.Message) []
 
 ////////// Helper methods //////////
 
-func castBFDValue(key string, value proto.Message) (*vpp_bfd.SingleHopBFD_Session, error) {
-	typedValue, ok := value.(*vpp_bfd.SingleHopBFD_Session)
+func castBFDValue(key string, value proto.Message) (*vpp_bfd.SingleHopBFD, error) {
+	typedValue, ok := value.(*vpp_bfd.SingleHopBFD)
 	if !ok {
 		return nil, ErrInvalidValueType(key, value)
 	}

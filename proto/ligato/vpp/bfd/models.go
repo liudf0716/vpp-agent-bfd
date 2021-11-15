@@ -22,41 +22,17 @@ import (
 const ModuleName = "vpp.bfds"
 
 var (
-	ModelBFD = models.Register(&SingleHopBFD{}, models.Spec{
+	ModelBFDSession = models.Register(&SingleHopBFD{}, models.Spec{
 		Module:  ModuleName,
 		Version: "v2",
-		Type:    "bfd",
-	}, models.WithNameTemplate("{{.Index}}"))
+		Type:    "session",
+	}, models.WithNameTemplate("{{.Interface}}/{{.SourceAddress}}"))
 )
 
 const (
-	// SessionPrefix bfd-session/
-	SessionPrefix = "vpp/config/v3/bfd/session/"
-	// AuthKeysPrefix bfd-key/
-	AuthKeysPrefix = "vpp/config/v3/bfd/auth-key/"
-	// EchoFunctionPrefix bfd-echo-function/
-	EchoFunctionPrefix = "vpp/config/v3/bfd/echo-function/"
 	// BFDEventKeyPrefix
 	BFDEventKeyPrefix = "vpp/interface/bfd-event/"
 )
-
-// SessionKey returns the prefix used in ETCD to store vpp bfd config
-// of a particular bfd session in selected vpp instance.
-func SessionKey(bfdSessionIfaceLabel string) string {
-	return SessionPrefix + bfdSessionIfaceLabel
-}
-
-// AuthKeysKey returns the prefix used in ETCD to store vpp bfd config
-// of a particular bfd key in selected vpp instance.
-func AuthKeysKey(bfdKeyIDLabel string) string {
-	return AuthKeysPrefix + bfdKeyIDLabel
-}
-
-// EchoFunctionKey returns the prefix used in ETCD to store vpp bfd config
-// of a particular bfd echo function in selected vpp instance.
-func EchoFunctionKey(bfdEchoIfaceLabel string) string {
-	return EchoFunctionPrefix + bfdEchoIfaceLabel
-}
 
 func BFDEventKey(ifName string) string {
 	return BFDEventKeyPrefix + ifName

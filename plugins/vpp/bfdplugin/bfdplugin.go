@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-//go:generate descriptor-adapter --descriptor-name BFD --value-type *vpp_bfd.SingleHopBFD_Session  --import "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd" --output-dir "descriptor"
+//go:generate descriptor-adapter --descriptor-name BFD --value-type *vpp_bfd.SingleHopBFD  --import "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd" --output-dir "descriptor"
 
 package bfdplugin
 
@@ -61,11 +61,6 @@ type Deps struct {
 
 // Init initializes BFD plugin.
 func (p *BFDPlugin) Init() error {
-	if !p.VPP.IsPluginLoaded("bfd") {
-		p.Log.Warnf("VPP plugin BFD was disabled by VPP")
-		return nil
-	}
-
 	p.ctx, p.cancel = context.WithCancel(context.Background())
 
 	// init handlers

@@ -16,16 +16,17 @@ package descriptor
 
 import (
 	"context"
+	"net"
 	"sync"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/pkg/errors"
 	"go.ligato.io/cn-infra/v2/logging"
 
-	"go.ligato.io/vpp-agent/v3/plugins/kvscheduler/api"
 	kvs "go.ligato.io/vpp-agent/v3/plugins/kvscheduler/api"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/descriptor/adapter"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
+	vpp_ifdescriptor "go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin/descriptor"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin/ifaceidx"
 	bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
 )
@@ -33,6 +34,24 @@ import (
 const (
 	// BFDDescriptorName is descriptor name
 	BFDDescriptorName = "vpp-bfd"
+)
+
+// A list of errors:
+var (
+	// ErrBfdWithoutInterface is returned when bfd interface name is empty.
+	ErrBfdWithoutInterface = errors.New("bfd interface is not defined")
+
+	// ErrBfdSourceAddressMissing is returned when source address was not set or set to an empty string.
+	ErrBfdSourceAddressMissing = errors.Errorf("Missing source address for bfd")
+
+	// ErrBfdSourceAddressBad is returned when source address was not set to valid IP address.
+	ErrBfdSourceAddressBad = errors.New("Invalid bfd source address")
+
+	// ErrBfdDestinationAddressMissing is returned when destination address was not set or set to an empty string.
+	ErrBfdDestinationAddressMissing = errors.Errorf("Missing destination address for bfd")
+
+	// ErrBfdDestinationAddressBad is returned when destination address was not set to valid IP address.
+	ErrBfdDestinationAddressBad = errors.New("Invalid bfd destination address")
 )
 
 type BFDDescriptor struct {
@@ -77,24 +96,52 @@ func (d *BFDDescriptor) Close() error {
 // the KVScheduler.
 func (d *BFDDescriptor) GetDescriptor() *adapter.BFDDescriptor {
 	return &adapter.BFDDescriptor{
-		Name:            BFDDescriptorName,
-		NBKeyPrefix:     bfd.ModelBFD.KeyPrefix(),
-		ValueTypeName:   bfd.ModelBFD.ProtoName(),
-		KeySelector:     bfd.ModelBFD.IsKeyValid,
-		KeyLabel:        bfd.ModelBFD.StripKeyPrefix,
-		ValueComparator: d.EquivalentBFDs,
-		WithMetadata:    true,
-		Create:          d.Create,
-		Delete:          d.Delete,
-		DerivedValues:   d.DerivedValues,
+		Name:                 BFDDescriptorName,
+		NBKeyPrefix:          bfd.ModelBFDSession.KeyPrefix(),
+		ValueTypeName:        bfd.ModelBFDSession.ProtoName(),
+		KeySelector:          bfd.ModelBFDSession.IsKeyValid,
+		KeyLabel:             bfd.ModelBFDSession.StripKeyPrefix,
+		ValueComparator:      d.EquivalentBFDs,
+		Validate:             d.Validate,
+		Create:               d.Create,
+		Delete:               d.Delete,
+		Retrieve:             d.Retrieve,
+		RetrieveDependencies: []string{vpp_ifdescriptor.InterfaceDescriptorName},
 	}
 }
 
-func (d *BFDDescriptor) EquivalentBFDs(key string, oldBFD, newBFD *bfd.SingleHopBFD_Session) bool {
-	return proto.Equal(oldBFD, newBFD)
+func (d *BFDDescriptor) EquivalentBFDs(key string, oldBFD, newBFD *bfd.SingleHopBFD) bool {
+	oldBFDInput := oldBFD.GetSession()
+	newBFDInput := newBFD.GetSession()
+
+	return proto.Equal(oldBFDInput, newBFDInput)
 }
 
-func (d *BFDDescriptor) Create(key string, bfdInput *bfd.SingleHopBFD_Session) (interface{}, error) {
+func (d *BFDDescriptor) Validate(key string, bfd *bfd.SingleHopBFD) (err error) {
+	bfdInput := bfd.GetSession()
+
+	if bfdInput.Interface == "" {
+		return kvs.NewInvalidValueError(ErrBfdWithoutInterface, "interface")
+	}
+	if bfdInput.SourceAddress == "" {
+		return kvs.NewInvalidValueError(ErrBfdSourceAddressMissing, "source_address")
+	}
+	if net.ParseIP(bfdInput.SourceAddress).IsUnspecified() {
+		return kvs.NewInvalidValueError(ErrBfdSourceAddressBad, "source_address")
+	}
+	if bfdInput.DestinationAddress == "" {
+		return kvs.NewInvalidValueError(ErrBfdDestinationAddressMissing, "destination_address")
+	}
+	if net.ParseIP(bfdInput.DestinationAddress).IsUnspecified() {
+		return kvs.NewInvalidValueError(ErrBfdDestinationAddressBad, "destination_address")
+	}
+
+	return nil
+}
+
+func (d *BFDDescriptor) Create(key string, bfd *bfd.SingleHopBFD) (interface{}, error) {
+	bfdInput := bfd.GetSession()
+
 	// Verify interface presence
 	fromIfaceMeta, found := d.ifIndex.LookupByName(bfdInput.Interface)
 	if !found {
@@ -114,7 +161,8 @@ func (d *BFDDescriptor) Create(key string, bfdInput *bfd.SingleHopBFD_Session) (
 	return nil, nil
 }
 
-func (d *BFDDescriptor) Delete(key string, bfdInput *bfd.SingleHopBFD_Session, metadata interface{}) error {
+func (d *BFDDescriptor) Delete(key string, bfd *bfd.SingleHopBFD, metadata interface{}) error {
+	bfdInput := bfd.GetSession()
 	// Verify interface presence
 	fromIfaceMeta, found := d.ifIndex.LookupByName(bfdInput.Interface)
 	if !found {
@@ -133,8 +181,9 @@ func (d *BFDDescriptor) Delete(key string, bfdInput *bfd.SingleHopBFD_Session, m
 	return nil
 }
 
-func (d *BFDDescriptor) DerivedValues(key string, value *bfd.SingleHopBFD_Session) (derived []api.KeyValuePair) {
-	return derived
+// Retrieve returns list of configured BFDs with metadata
+func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []adapter.BFDKVWithMetadata, err error) {
+	return
 }
 
 // watchBFDNotifications watches and processes BFD notifiction

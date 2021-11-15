@@ -20,29 +20,6 @@ import (
 	bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
 )
 
-// DumpBfdSingleHop implements BFD handler.
-func (h *BFDVppHandler) DumpBfdSingleHop() (*vppcalls.BfdDetails, error) {
-	sessionDetails, err := h.DumpBfdSessions()
-	if err != nil {
-		return nil, err
-	}
-	keyDetails, err := h.DumpBfdAuthKeys()
-	if err != nil {
-		return nil, err
-	}
-
-	return &vppcalls.BfdDetails{
-		Bfd: &bfd.SingleHopBFD{
-			Sessions: sessionDetails.Session,
-			Keys:     keyDetails.AuthKeys,
-		},
-		Meta: &vppcalls.BfdMeta{
-			BfdSessionMeta: sessionDetails.Meta,
-			BfdAuthKeyMeta: keyDetails.Meta,
-		},
-	}, nil
-}
-
 // DumpBfdSessions implements BFD handler.
 func (h *BFDVppHandler) DumpBfdSessions() (*vppcalls.BfdSessionDetails, error) {
 	var sessions []*bfd.SingleHopBFD_Session

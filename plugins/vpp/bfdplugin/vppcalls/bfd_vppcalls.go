@@ -83,8 +83,8 @@ type BFDVppAPI interface {
 }
 
 type BFDVppRead interface {
-	// DumpBfdSingleHop dump bfd single hop
-	DumpBfdSingleHop() (*BfdDetails, error)
+	// DumpBfdSessions dump bfd sessions
+	DumpBfdSessions() (*BfdSessionDetails, error)
 	// WatchBFDEvent starts watching for bfd events.
 	WatchBFDEvents(ctx context.Context, eventsCh chan<- *BfdUdpSessionDetails) error
 }
