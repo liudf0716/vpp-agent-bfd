@@ -76,7 +76,7 @@ func (p *Plugin) registerBFDHandlers() {
 		if p.bfdHandler == nil {
 			return nil, ErrHandlerUnavailable
 		}
-		return p.bfdHandler.DumpBfdSingleHop()
+		return p.bfdHandler.DumpBfdSessions()
 	})
 }
 

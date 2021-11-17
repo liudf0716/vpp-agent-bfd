@@ -39,7 +39,7 @@ type BfdMeta struct {
 
 // BfdSessionDetails is the wrapper structure for the BFD session northbound API structure.
 type BfdSessionDetails struct {
-	Session []*bfd.SingleHopBFD_Session
+	Session []*bfd.Session
 	Meta    *BfdSessionMeta
 }
 

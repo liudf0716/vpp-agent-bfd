@@ -22,7 +22,7 @@ import (
 
 // DumpBfdSessions implements BFD handler.
 func (h *BFDVppHandler) DumpBfdSessions() (*vppcalls.BfdSessionDetails, error) {
-	var sessions []*bfd.SingleHopBFD_Session
+	var sessions []*bfd.Session
 	meta := &vppcalls.BfdSessionMeta{
 		SessionIfToIdx: make(map[uint32]string),
 	}
@@ -46,17 +46,15 @@ func (h *BFDVppHandler) DumpBfdSessions() (*vppcalls.BfdSessionDetails, error) {
 		}
 
 		// Put session info
-		sessions = append(sessions, &bfd.SingleHopBFD_Session{
+		sessions = append(sessions, &bfd.Session{
 			Interface:             ifName,
 			DestinationAddress:    sessionDetails.LocalAddr.String(),
 			SourceAddress:         sessionDetails.PeerAddr.String(),
 			DesiredMinTxInterval:  sessionDetails.DesiredMinTx,
 			RequiredMinRxInterval: sessionDetails.RequiredMinRx,
 			DetectMultiplier:      uint32(sessionDetails.DetectMult),
-			Authentication: &bfd.SingleHopBFD_Session_Authentication{
-				KeyId:           uint32(sessionDetails.BfdKeyID),
-				AdvertisedKeyId: uint32(sessionDetails.ConfKeyID),
-			},
+			KeyId:                 uint32(sessionDetails.BfdKeyID),
+			AdvertisedKeyId:       uint32(sessionDetails.ConfKeyID),
 		})
 		// Put bfd interface info
 		meta.SessionIfToIdx[uint32(sessionDetails.SwIfIndex)] = ifName
@@ -65,25 +63,6 @@ func (h *BFDVppHandler) DumpBfdSessions() (*vppcalls.BfdSessionDetails, error) {
 	return &vppcalls.BfdSessionDetails{
 		Session: sessions,
 		Meta:    meta,
-	}, nil
-}
-
-// DumpBfdUDPSessionsWithID implements BFD handler.
-func (h *BFDVppHandler) DumpBfdUDPSessionsWithID(authKeyIndex uint32) (*vppcalls.BfdSessionDetails, error) {
-	details, err := h.DumpBfdSessions()
-	if err != nil || len(details.Session) == 0 {
-		return nil, err
-	}
-
-	var indexedSessions []*bfd.SingleHopBFD_Session
-	for _, session := range details.Session {
-		if session.Authentication != nil && session.Authentication.KeyId == authKeyIndex {
-			indexedSessions = append(indexedSessions, session)
-		}
-	}
-
-	return &vppcalls.BfdSessionDetails{
-		Session: indexedSessions,
 	}, nil
 }
 

@@ -496,13 +496,14 @@ func (svc *dumpService) DumpWgPeers() (peers []*vpp_wg.Peer, err error) {
 	return
 }
 
-func (svc *dumpService) DumpBfds() (bfds []*vpp_bfd.SingleHopBFD, err error) {
+func (svc *dumpService) DumpBfds() (bfds []*vpp_bfd.Session, err error) {
 	if svc.bfdHandler == nil {
 		// handler is not available
 		return nil, nil
 	}
 
-	_, err = svc.bfdHandler.DumpBfdSingleHop()
+	// TODO
+	_, err = svc.bfdHandler.DumpBfdSessions()
 	if err != nil {
 		return nil, err
 	}

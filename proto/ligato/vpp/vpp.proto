@@ -34,7 +34,7 @@ message ConfigData {
 
     repeated acl.ACL acls = 20;
     repeated abf.ABF abfs = 21;
-    repeated bfd.SingleHopBFD bfds = 22;
+    repeated bfd.Session bfds = 22;
 
     repeated l2.BridgeDomain bridge_domains = 30;
     repeated l2.FIBEntry fibs = 31;

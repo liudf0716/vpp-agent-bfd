@@ -26,7 +26,7 @@ var (
 		Module:  ModuleName,
 		Version: "v2",
 		Type:    "session",
-	}, models.WithNameTemplate("{{.Interface}}/{{.SourceAddress}}"))
+	}, models.WithNameTemplate("{{.BfdInterface}}/{{.SourceAddress}}/{{.DestinationAddress}}"))
 )
 
 const (
