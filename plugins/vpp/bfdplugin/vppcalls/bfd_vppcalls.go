@@ -76,10 +76,18 @@ type BfdUdpSessionDetails struct {
 type BFDVppAPI interface {
 	BFDVppRead
 
-	// AddBFD create bfd udp session
+	// AddBfdUDPSession create bfd udp session
 	AddBfdUDPSession(bfdSess *bfd.SingleHopBFD_Session, ifIdx uint32) error
-	// DeleateBfd delete bfd udp session
+	// SetBfdUDPAuthenticationKey create bfd udp authentication key
+	SetBfdUDPAuthenticationKey(bfdKey *bfd.SingleHopBFD_Key) error
+	// AddBfdUDPEchoFunction create bfd echo function
+	AddBfdUDPEchoFunction(bfdEcho *bfd.SingleHopBFD_EchoFunction, ifIdx uint32) error
+	// DeleteBfdUDPSession delete bfd udp session
 	DeleteBfdUDPSession(ifIndex uint32, sourceAddress string, destAddress string) error
+	// DeleteBfdUDPAuthenticationKey delete bfd authentication key
+	DeleteBfdUDPAuthenticationKey(bfdKey *bfd.SingleHopBFD_Key) error
+	// DeleteBfdUDPEchoFunction delete bfd echo function
+	DeleteBfdUDPEchoFunction() error
 }
 
 type BFDVppRead interface {

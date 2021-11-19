@@ -17,6 +17,7 @@ package descriptor
 import (
 	"context"
 	"net"
+	"strings"
 	"sync"
 
 	"github.com/golang/protobuf/proto"
@@ -52,6 +53,15 @@ var (
 
 	// ErrBfdDestinationAddressBad is returned when destination address was not set to valid IP address.
 	ErrBfdDestinationAddressBad = errors.New("Invalid bfd destination address")
+
+	// ErrBfdParamNotSame is return when some param should be equal but not
+	ErrBfdParamNotSame = errors.New("Parameter not same")
+
+	// ErrBfdNoAuthKey is return when session need auth key but no auth define
+	ErrBfdNoAuthKey = errors.New("No auth define")
+
+	// ErrBfdAuthKeyLengthExceed is returned when bfd auth key length exceed 20
+	ErrBfdAuthKeyLengthExceed = errors.New("bfd auth key length out 20")
 )
 
 type BFDDescriptor struct {
@@ -135,6 +145,20 @@ func (d *BFDDescriptor) Validate(key string, bfd *bfd.SingleHopBFD) (err error) 
 	if net.ParseIP(bfdInput.DestinationAddress).IsUnspecified() {
 		return kvs.NewInvalidValueError(ErrBfdDestinationAddressBad, "destination_address")
 	}
+	if bfdInput.Interface != bfd.BfdInterface || bfdInput.SourceAddress != bfd.SourceAddress || bfdInput.DestinationAddress != bfd.DestinationAddress {
+		return kvs.NewInvalidValueError(ErrBfdParamNotSame, "param_not_same")
+	}
+	if bfdInput.Authentication != nil && bfd.GetKey() == nil {
+		return kvs.NewInvalidValueError(ErrBfdNoAuthKey, "no_auth_key")
+	} else if bfdInput.Authentication != nil && bfd.GetKey() != nil {
+		if bfdInput.Authentication.AdvertisedKeyId != bfd.Key.AuthKeyIndex {
+			return kvs.NewInvalidValueError(ErrBfdParamNotSame, "param_not_same")
+		}
+
+		if len(bfd.Key.Secret) > 20 || len(bfd.Key.Secret) == 0 {
+			return kvs.NewInvalidValueError(ErrBfdAuthKeyLengthExceed, "bfd_key_secret")
+		}
+	}
 
 	return nil
 }
@@ -148,10 +172,46 @@ func (d *BFDDescriptor) Create(key string, bfd *bfd.SingleHopBFD) (interface{}, 
 		return nil, errors.Errorf("failed to find interface %s", bfdInput.Interface)
 	}
 
-	ifIdx := fromIfaceMeta.SwIfIndex
+	// Check whether BFD contains source IP address
+	if fromIfaceMeta == nil {
+		return nil, errors.Errorf("unable to get IP address data from interface %v", bfdInput.Interface)
+	}
+	var ipFound bool
+	for _, ipAddr := range fromIfaceMeta.IPAddresses {
+		// Remove suffix
+		ipWithMask := strings.Split(ipAddr, "/")
+		if len(ipWithMask) == 0 {
+			return nil, errors.Errorf("incorrect interface %s IP address %s format", bfdInput.Interface, ipAddr)
+		}
+		ipAddrWithoutMask := ipWithMask[0] // the first index is IP address
+		if ipAddrWithoutMask == bfdInput.SourceAddress {
+			ipFound = true
+			break
+		}
+	}
+	if !ipFound {
+		return nil, errors.Errorf("interface %s does not contain IP address %s required for modified BFD session",
+			bfdInput.Interface, bfdInput.SourceAddress)
+	}
 
-	// Call vpp api
-	err := d.bfdHandler.AddBfdUDPSession(bfdInput, ifIdx)
+	bfdAuthKey := bfd.GetKey()
+	if bfdAuthKey != nil {
+		if bfdAuthKey.AuthKeyIndex != bfdInput.Authentication.AdvertisedKeyId {
+			return nil, errors.Errorf("session auth advertise key index %d not equal with bfd auth key index %d",
+				bfdInput.Authentication.AdvertisedKeyId, bfdAuthKey.AuthKeyIndex)
+		}
+		// Call vpp api to add bfd authentication key
+		authKeyErr := d.bfdHandler.SetBfdUDPAuthenticationKey(bfdAuthKey)
+		if authKeyErr != nil {
+			return nil, errors.Errorf("bfd upd authentication key failed : %v", authKeyErr)
+		}
+		d.log.Infof("BFD Authentication key configured %s ", bfdAuthKey.Name)
+	} else {
+		d.log.Infof("BFD Authentication key is nil ")
+	}
+
+	// Call vpp api to add bfd session
+	err := d.bfdHandler.AddBfdUDPSession(bfdInput, fromIfaceMeta.SwIfIndex)
 	if err != nil {
 		return nil, errors.Errorf("failed to configure BFD UDP session for interface %s: %v", bfdInput.Interface, err)
 	}
@@ -177,6 +237,15 @@ func (d *BFDDescriptor) Delete(key string, bfd *bfd.SingleHopBFD, metadata inter
 	}
 
 	d.log.Info("BFD session for interface %s removed", bfdInput.Interface)
+
+	if bfd.GetKey() == nil {
+		return nil
+	}
+
+	err = d.bfdHandler.DeleteBfdUDPAuthenticationKey(bfd.GetKey())
+	if err != nil {
+		return errors.Errorf("failed to remove BFD UDP Authentication key %v", err)
+	}
 
 	return nil
 }
