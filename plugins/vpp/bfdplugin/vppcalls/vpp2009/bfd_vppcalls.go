@@ -124,7 +124,7 @@ func (h *BFDVppHandler) SetBfdUDPAuthenticationKey(bfdKey *bfd.SingleHopBFD_Key)
 // DeleteBfdUDPAuthenticationKey implements BFD handler.
 func (h *BFDVppHandler) DeleteBfdUDPAuthenticationKey(bfdKey *bfd.SingleHopBFD_Key) error {
 	req := &vpp_bfd.BfdAuthDelKey{
-		ConfKeyID: bfdKey.Id,
+		ConfKeyID: bfdKey.AuthKeyIndex,
 	}
 	reply := &vpp_bfd.BfdAuthDelKeyReply{}
 
@@ -138,7 +138,7 @@ func (h *BFDVppHandler) DeleteBfdUDPAuthenticationKey(bfdKey *bfd.SingleHopBFD_K
 }
 
 // AddBfdEchoFunction implements BFD handler.
-func (h *BFDVppHandler) AddBfdUDPEchoFunction(bfdInput *bfd.SingleHopBFD_EchoFunction, ifIdx uint32) error {
+func (h *BFDVppHandler) AddBfdUDPEchoFunction(bfdInput *bfd.EchoFunction, ifIdx uint32) error {
 	req := &vpp_bfd.BfdUDPSetEchoSource{
 		SwIfIndex: interface_types.InterfaceIndex(ifIdx),
 	}

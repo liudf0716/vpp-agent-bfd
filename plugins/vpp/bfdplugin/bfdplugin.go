@@ -13,7 +13,7 @@
 //  limitations under the License.
 
 //go:generate descriptor-adapter --descriptor-name BFD --value-type *vpp_bfd.SingleHopBFD  --import "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd" --output-dir "descriptor"
-
+//go:generate descriptor-adapter --descriptor-name BfdEcho --value-type *vpp_bfd.EchoFunction --import "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd" --output-dir "descriptor"
 package bfdplugin
 
 import (
@@ -39,8 +39,9 @@ import (
 type BFDPlugin struct {
 	Deps
 
-	bfdHandler    vppcalls.BFDVppAPI
-	bfdDescriptor *descriptor.BFDDescriptor
+	bfdHandler        vppcalls.BFDVppAPI
+	bfdDescriptor     *descriptor.BFDDescriptor
+	bfdEchoDescriptor *descriptor.BfdEchoDescriptor
 
 	bfdIDSeq uint32
 
@@ -71,8 +72,10 @@ func (p *BFDPlugin) Init() error {
 
 	// init & register descriptor
 	p.bfdDescriptor = descriptor.NewBFDDescriptor(p.bfdHandler, p.Scheduler, p.IfPlugin.GetInterfaceIndex(), p.Log)
+	p.bfdEchoDescriptor = descriptor.NewBfdEchoDescriptor(p.bfdHandler, p.IfPlugin.GetInterfaceIndex(), p.Log)
 	bfdDescriptor := adapter.NewBFDDescriptor(p.bfdDescriptor.GetDescriptor())
-	if err := p.Deps.Scheduler.RegisterKVDescriptor(bfdDescriptor); err != nil {
+	bfdEchoDescriptor := adapter.NewBfdEchoDescriptor(p.bfdEchoDescriptor.GetDescriptor())
+	if err := p.Deps.Scheduler.RegisterKVDescriptor(bfdDescriptor, bfdEchoDescriptor); err != nil {
 		return err
 	}
 

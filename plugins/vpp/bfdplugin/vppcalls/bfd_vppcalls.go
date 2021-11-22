@@ -81,7 +81,7 @@ type BFDVppAPI interface {
 	// SetBfdUDPAuthenticationKey create bfd udp authentication key
 	SetBfdUDPAuthenticationKey(bfdKey *bfd.SingleHopBFD_Key) error
 	// AddBfdUDPEchoFunction create bfd echo function
-	AddBfdUDPEchoFunction(bfdEcho *bfd.SingleHopBFD_EchoFunction, ifIdx uint32) error
+	AddBfdUDPEchoFunction(bfdEcho *bfd.EchoFunction, ifIdx uint32) error
 	// DeleteBfdUDPSession delete bfd udp session
 	DeleteBfdUDPSession(ifIndex uint32, sourceAddress string, destAddress string) error
 	// DeleteBfdUDPAuthenticationKey delete bfd authentication key

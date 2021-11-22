@@ -27,6 +27,12 @@ var (
 		Version: "v2",
 		Type:    "session",
 	}, models.WithNameTemplate("{{.BfdInterface}}/{{.SourceAddress}}/{{.DestinationAddress}}"))
+
+	ModelEchoFunction = models.Register(&EchoFunction{}, models.Spec{
+		Module:  ModuleName,
+		Version: "v2",
+		Type:    "echo",
+	}, models.WithNameTemplate("{{.EchoSourceInterface}}"))
 )
 
 const (

@@ -392,6 +392,53 @@ func (x *SessionDetails) GetState() SessionDetails_BfdState {
 	return SessionDetails_BFD_STATE_API_ADMIN_DOWN
 }
 
+type EchoFunction struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	EchoSourceInterface string `protobuf:"bytes,1,opt,name=echo_source_interface,json=echoSourceInterface,proto3" json:"echo_source_interface,omitempty"` // name of the interface that the echo source address will be derived from
+}
+
+func (x *EchoFunction) Reset() {
+	*x = EchoFunction{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EchoFunction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EchoFunction) ProtoMessage() {}
+
+func (x *EchoFunction) ProtoReflect() protoreflect.Message {
+	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EchoFunction.ProtoReflect.Descriptor instead.
+func (*EchoFunction) Descriptor() ([]byte, []int) {
+	return file_ligato_vpp_bfd_bfd_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *EchoFunction) GetEchoSourceInterface() string {
+	if x != nil {
+		return x.EchoSourceInterface
+	}
+	return ""
+}
+
 type SingleHopBFD_Session struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -410,7 +457,7 @@ type SingleHopBFD_Session struct {
 func (x *SingleHopBFD_Session) Reset() {
 	*x = SingleHopBFD_Session{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[3]
+		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -423,7 +470,7 @@ func (x *SingleHopBFD_Session) String() string {
 func (*SingleHopBFD_Session) ProtoMessage() {}
 
 func (x *SingleHopBFD_Session) ProtoReflect() protoreflect.Message {
-	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[3]
+	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -510,7 +557,7 @@ type SingleHopBFD_Key struct {
 func (x *SingleHopBFD_Key) Reset() {
 	*x = SingleHopBFD_Key{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[4]
+		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -523,7 +570,7 @@ func (x *SingleHopBFD_Key) String() string {
 func (*SingleHopBFD_Key) ProtoMessage() {}
 
 func (x *SingleHopBFD_Key) ProtoReflect() protoreflect.Message {
-	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[4]
+	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -574,19 +621,20 @@ func (x *SingleHopBFD_Key) GetSecret() string {
 	return ""
 }
 
+// pls do not use this to configure echo function
 type SingleHopBFD_EchoFunction struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Name                string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	EchoSourceInterface string `protobuf:"bytes,2,opt,name=echo_source_interface,json=echoSourceInterface,proto3" json:"echo_source_interface,omitempty"` // name of the loopback interface that the echo source address will be derived from
+	EchoSourceInterface string `protobuf:"bytes,2,opt,name=echo_source_interface,json=echoSourceInterface,proto3" json:"echo_source_interface,omitempty"` // name of the interface that the echo source address will be derived from
 }
 
 func (x *SingleHopBFD_EchoFunction) Reset() {
 	*x = SingleHopBFD_EchoFunction{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[5]
+		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -599,7 +647,7 @@ func (x *SingleHopBFD_EchoFunction) String() string {
 func (*SingleHopBFD_EchoFunction) ProtoMessage() {}
 
 func (x *SingleHopBFD_EchoFunction) ProtoReflect() protoreflect.Message {
-	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[5]
+	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -641,7 +689,7 @@ type SingleHopBFD_Session_Authentication struct {
 func (x *SingleHopBFD_Session_Authentication) Reset() {
 	*x = SingleHopBFD_Session_Authentication{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[6]
+		mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -654,7 +702,7 @@ func (x *SingleHopBFD_Session_Authentication) String() string {
 func (*SingleHopBFD_Session_Authentication) ProtoMessage() {}
 
 func (x *SingleHopBFD_Session_Authentication) ProtoReflect() protoreflect.Message {
-	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[6]
+	mi := &file_ligato_vpp_bfd_bfd_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -807,11 +855,15 @@ var file_ligato_vpp_bfd_bfd_proto_rawDesc = []byte{
 	0x44, 0x4f, 0x57, 0x4e, 0x10, 0x01, 0x12, 0x16, 0x0a, 0x12, 0x42, 0x46, 0x44, 0x5f, 0x53, 0x54,
 	0x41, 0x54, 0x45, 0x5f, 0x41, 0x50, 0x49, 0x5f, 0x49, 0x4e, 0x49, 0x54, 0x10, 0x02, 0x12, 0x14,
 	0x0a, 0x10, 0x42, 0x46, 0x44, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x41, 0x50, 0x49, 0x5f,
-	0x55, 0x50, 0x10, 0x03, 0x42, 0x38, 0x5a, 0x36, 0x67, 0x6f, 0x2e, 0x6c, 0x69, 0x67, 0x61, 0x74,
-	0x6f, 0x2e, 0x69, 0x6f, 0x2f, 0x76, 0x70, 0x70, 0x2d, 0x61, 0x67, 0x65, 0x6e, 0x74, 0x2f, 0x76,
-	0x33, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6c, 0x69, 0x67, 0x61, 0x74, 0x6f, 0x2f, 0x76,
-	0x70, 0x70, 0x2f, 0x62, 0x66, 0x64, 0x3b, 0x76, 0x70, 0x70, 0x5f, 0x62, 0x66, 0x64, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x55, 0x50, 0x10, 0x03, 0x22, 0x42, 0x0a, 0x0c, 0x45, 0x63, 0x68, 0x6f, 0x46, 0x75, 0x6e, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x32, 0x0a, 0x15, 0x65, 0x63, 0x68, 0x6f, 0x5f, 0x73, 0x6f, 0x75,
+	0x72, 0x63, 0x65, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x66, 0x61, 0x63, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x13, 0x65, 0x63, 0x68, 0x6f, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x49,
+	0x6e, 0x74, 0x65, 0x72, 0x66, 0x61, 0x63, 0x65, 0x42, 0x38, 0x5a, 0x36, 0x67, 0x6f, 0x2e, 0x6c,
+	0x69, 0x67, 0x61, 0x74, 0x6f, 0x2e, 0x69, 0x6f, 0x2f, 0x76, 0x70, 0x70, 0x2d, 0x61, 0x67, 0x65,
+	0x6e, 0x74, 0x2f, 0x76, 0x33, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6c, 0x69, 0x67, 0x61,
+	0x74, 0x6f, 0x2f, 0x76, 0x70, 0x70, 0x2f, 0x62, 0x66, 0x64, 0x3b, 0x76, 0x70, 0x70, 0x5f, 0x62,
+	0x66, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -827,24 +879,25 @@ func file_ligato_vpp_bfd_bfd_proto_rawDescGZIP() []byte {
 }
 
 var file_ligato_vpp_bfd_bfd_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_ligato_vpp_bfd_bfd_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_ligato_vpp_bfd_bfd_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_ligato_vpp_bfd_bfd_proto_goTypes = []interface{}{
 	(SingleHopBFD_Key_AuthenticationType)(0),    // 0: ligato.vpp.bfd.SingleHopBFD.Key.AuthenticationType
 	(SessionDetails_BfdState)(0),                // 1: ligato.vpp.bfd.SessionDetails.BfdState
 	(*SingleHopBFD)(nil),                        // 2: ligato.vpp.bfd.SingleHopBFD
 	(*Session)(nil),                             // 3: ligato.vpp.bfd.Session
 	(*SessionDetails)(nil),                      // 4: ligato.vpp.bfd.SessionDetails
-	(*SingleHopBFD_Session)(nil),                // 5: ligato.vpp.bfd.SingleHopBFD.Session
-	(*SingleHopBFD_Key)(nil),                    // 6: ligato.vpp.bfd.SingleHopBFD.Key
-	(*SingleHopBFD_EchoFunction)(nil),           // 7: ligato.vpp.bfd.SingleHopBFD.EchoFunction
-	(*SingleHopBFD_Session_Authentication)(nil), // 8: ligato.vpp.bfd.SingleHopBFD.Session.Authentication
+	(*EchoFunction)(nil),                        // 5: ligato.vpp.bfd.EchoFunction
+	(*SingleHopBFD_Session)(nil),                // 6: ligato.vpp.bfd.SingleHopBFD.Session
+	(*SingleHopBFD_Key)(nil),                    // 7: ligato.vpp.bfd.SingleHopBFD.Key
+	(*SingleHopBFD_EchoFunction)(nil),           // 8: ligato.vpp.bfd.SingleHopBFD.EchoFunction
+	(*SingleHopBFD_Session_Authentication)(nil), // 9: ligato.vpp.bfd.SingleHopBFD.Session.Authentication
 }
 var file_ligato_vpp_bfd_bfd_proto_depIdxs = []int32{
-	5, // 0: ligato.vpp.bfd.SingleHopBFD.session:type_name -> ligato.vpp.bfd.SingleHopBFD.Session
-	6, // 1: ligato.vpp.bfd.SingleHopBFD.key:type_name -> ligato.vpp.bfd.SingleHopBFD.Key
-	7, // 2: ligato.vpp.bfd.SingleHopBFD.echo_function:type_name -> ligato.vpp.bfd.SingleHopBFD.EchoFunction
+	6, // 0: ligato.vpp.bfd.SingleHopBFD.session:type_name -> ligato.vpp.bfd.SingleHopBFD.Session
+	7, // 1: ligato.vpp.bfd.SingleHopBFD.key:type_name -> ligato.vpp.bfd.SingleHopBFD.Key
+	8, // 2: ligato.vpp.bfd.SingleHopBFD.echo_function:type_name -> ligato.vpp.bfd.SingleHopBFD.EchoFunction
 	1, // 3: ligato.vpp.bfd.SessionDetails.state:type_name -> ligato.vpp.bfd.SessionDetails.BfdState
-	8, // 4: ligato.vpp.bfd.SingleHopBFD.Session.authentication:type_name -> ligato.vpp.bfd.SingleHopBFD.Session.Authentication
+	9, // 4: ligato.vpp.bfd.SingleHopBFD.Session.authentication:type_name -> ligato.vpp.bfd.SingleHopBFD.Session.Authentication
 	0, // 5: ligato.vpp.bfd.SingleHopBFD.Key.authentication_type:type_name -> ligato.vpp.bfd.SingleHopBFD.Key.AuthenticationType
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
@@ -896,7 +949,7 @@ func file_ligato_vpp_bfd_bfd_proto_init() {
 			}
 		}
 		file_ligato_vpp_bfd_bfd_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SingleHopBFD_Session); i {
+			switch v := v.(*EchoFunction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -908,7 +961,7 @@ func file_ligato_vpp_bfd_bfd_proto_init() {
 			}
 		}
 		file_ligato_vpp_bfd_bfd_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SingleHopBFD_Key); i {
+			switch v := v.(*SingleHopBFD_Session); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -920,7 +973,7 @@ func file_ligato_vpp_bfd_bfd_proto_init() {
 			}
 		}
 		file_ligato_vpp_bfd_bfd_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SingleHopBFD_EchoFunction); i {
+			switch v := v.(*SingleHopBFD_Key); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -932,6 +985,18 @@ func file_ligato_vpp_bfd_bfd_proto_init() {
 			}
 		}
 		file_ligato_vpp_bfd_bfd_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SingleHopBFD_EchoFunction); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_ligato_vpp_bfd_bfd_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SingleHopBFD_Session_Authentication); i {
 			case 0:
 				return &v.state
@@ -950,7 +1015,7 @@ func file_ligato_vpp_bfd_bfd_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_ligato_vpp_bfd_bfd_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

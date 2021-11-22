@@ -35,9 +35,10 @@ message SingleHopBFD {
     }
     Key key = 2; /* authentication key */
 
+    // pls do not use this to configure echo function
     message EchoFunction {
         string name = 1;
-        string echo_source_interface = 2; /* name of the loopback interface that the echo source address will be derived from */
+        string echo_source_interface = 2; /* name of the interface that the echo source address will be derived from */
     }
     EchoFunction echo_function = 3; /* BFD echo function (optional, disabled if empty) */
 
@@ -69,4 +70,8 @@ message SessionDetails {
         BFD_STATE_API_UP = 3;
     }
     BfdState state = 4;
+}
+
+message EchoFunction {
+    string echo_source_interface = 1; /* name of the interface that the echo source address will be derived from */
 }
