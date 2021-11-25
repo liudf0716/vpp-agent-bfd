@@ -32,7 +32,8 @@ func (h *ArpVppHandler) vppAddDelArp(entry *l3.ARPEntry, delete bool) error {
 	}
 
 	var flags vpp_ip_neighbor.IPNeighborFlags
-	flags |= vpp_ip_neighbor.IP_API_NEIGHBOR_FLAG_NO_FIB_ENTRY
+	// liudf 20211125 comment this
+	// flags |= vpp_ip_neighbor.IP_API_NEIGHBOR_FLAG_NO_FIB_ENTRY
 	if entry.Static {
 		flags |= vpp_ip_neighbor.IP_API_NEIGHBOR_FLAG_STATIC
 	}
