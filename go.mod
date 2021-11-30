@@ -18,7 +18,7 @@ require (
 	github.com/fsouza/go-dockerclient v1.6.6
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-errors/errors v1.0.1
-	github.com/goccy/go-graphviz v0.0.6
+	github.com/goccy/go-graphviz v0.0.9
 	github.com/goccy/go-yaml v1.8.0
 	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.2
