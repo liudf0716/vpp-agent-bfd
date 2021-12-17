@@ -108,15 +108,23 @@ func (h *BFDVppHandler) WatchBFDEvents(ctx context.Context, eventsCh chan<- *vpp
 }
 
 func toBfdUdpSessionDetails(bfdDetails *vpp_bfd.BfdUDPSessionDetails) *vppcalls.BfdUdpSessionDetails {
-	srcAddrArr := bfdDetails.LocalAddr.Un.GetIP4()
-	srcAddr := net.IP(srcAddrArr[:])
-	dstAddrArr := bfdDetails.PeerAddr.Un.GetIP4()
-	dstAddr := net.IP(dstAddrArr[:])
-
+	var srcAddr
+	var dstAddr
+	if bfdDetails.LocalAddr.Af == ip_types.ADDRESS_IP6 {
+		srcAddrArr := bfdDetails.LocalAddr.Un.GetIP6()
+		srcAddr = net.IP(srcAddrArr[:]).To16().String()
+		dstAddrArr := bfdDetails.PeerAddr.Un.GetIP6()
+		dstAddr = net.IP(dstAddrArr[:]).To16().String()
+	} else {
+		srcAddrArr := bfdDetails.LocalAddr.Un.GetIP4()
+		srcAddr = net.IP(srcAddrArr[:]).To4().String()
+		dstAddrArr := bfdDetails.PeerAddr.Un.GetIP4()
+		dstAddr = net.IP(dstAddrArr[:]).To4().String()
+	}
 	bfdUdpSessionDetails := &vppcalls.BfdUdpSessionDetails{
 		SwIfIndex:       uint32(bfdDetails.SwIfIndex),
-		LocalAddr:       srcAddr.String(),
-		PeerAddr:        dstAddr.String(),
+		LocalAddr:       srcAddr,
+		PeerAddr:        dstAddr,
 		BfdState:        uint8(bfdDetails.State),
 		IsAuthenticated: bfdDetails.IsAuthenticated,
 		BfdKeyID:        bfdDetails.BfdKeyID,
