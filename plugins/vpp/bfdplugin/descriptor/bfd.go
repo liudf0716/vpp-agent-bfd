@@ -30,11 +30,15 @@ import (
 	vpp_ifdescriptor "go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin/descriptor"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin/ifaceidx"
 	bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
+	interfaces "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/interfaces"
 )
 
 const (
 	// BFDDescriptorName is descriptor name
 	BFDDescriptorName = "vpp-bfd"
+	
+	// dependency labels
+	interfaceDep = "interface-exists"
 )
 
 // A list of errors:
@@ -116,6 +120,7 @@ func (d *BFDDescriptor) GetDescriptor() *adapter.BFDDescriptor {
 		Create:               d.Create,
 		Delete:               d.Delete,
 		Retrieve:             d.Retrieve,
+		Dependencies:		  d.Dependencies,	     
 		RetrieveDependencies: []string{vpp_ifdescriptor.InterfaceDescriptorName},
 	}
 }
@@ -251,8 +256,17 @@ func (d *BFDDescriptor) Delete(key string, bfd *bfd.SingleHopBFD, metadata inter
 }
 
 // Retrieve returns list of configured BFDs with metadata
+// TODO
 func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []adapter.BFDKVWithMetadata, err error) {
 	return
+}
+
+// TODO
+func (d *BFDDescriptor) Dependencies(key string, session *bfd.Session) (dependencies []api.Dependency) {
+	return []api.Dependency {
+		Label:	interfaceDep,
+		Key:	interfaces.InterfaceKey(session.interface)
+	}
 }
 
 // watchBFDNotifications watches and processes BFD notifiction
