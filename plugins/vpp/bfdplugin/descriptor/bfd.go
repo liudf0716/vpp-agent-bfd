@@ -120,7 +120,7 @@ func (d *BFDDescriptor) GetDescriptor() *adapter.BFDDescriptor {
 		Create:               d.Create,
 		Delete:               d.Delete,
 		Retrieve:             d.Retrieve,
-		Dependencies:		  d.Dependencies,	     
+		Dependencies:	      d.Dependencies,	     
 		RetrieveDependencies: []string{vpp_ifdescriptor.InterfaceDescriptorName},
 	}
 }
@@ -262,10 +262,12 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 }
 
 // TODO
-func (d *BFDDescriptor) Dependencies(key string, bfd *bfd.SingleHopBFD) (dependencies []api.Dependency) {
-	return []api.Dependency {
-		Label:	interfaceDep,
-		Key:	interfaces.InterfaceKey(bfd.BfdInterface)
+func (d *BFDDescriptor) Dependencies(key string, bfd *bfd.SingleHopBFD) (dependencies []kvs.Dependency) {
+	return []kvs.Dependency {
+		{
+			Label:	interfaceDep,
+			Key:	interfaces.InterfaceKey(bfd.BfdInterface),
+		},	
 	}
 }
 

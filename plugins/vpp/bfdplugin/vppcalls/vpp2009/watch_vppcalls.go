@@ -24,6 +24,7 @@ import (
 	"github.com/pkg/errors"
 
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
+	"go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/ip_types"
 	vpp_bfd "go.ligato.io/vpp-agent/v3/plugins/vpp/binapi/vpp2009/bfd"
 )
 
@@ -108,8 +109,7 @@ func (h *BFDVppHandler) WatchBFDEvents(ctx context.Context, eventsCh chan<- *vpp
 }
 
 func toBfdUdpSessionDetails(bfdDetails *vpp_bfd.BfdUDPSessionDetails) *vppcalls.BfdUdpSessionDetails {
-	var srcAddr
-	var dstAddr
+	var srcAddr, dstAddr string
 	if bfdDetails.LocalAddr.Af == ip_types.ADDRESS_IP6 {
 		srcAddrArr := bfdDetails.LocalAddr.Un.GetIP6()
 		srcAddr = net.IP(srcAddrArr[:]).To16().String()
