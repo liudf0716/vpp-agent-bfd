@@ -262,10 +262,10 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 }
 
 // TODO
-func (d *BFDDescriptor) Dependencies(key string, session *bfd.Session) (dependencies []api.Dependency) {
+func (d *BFDDescriptor) Dependencies(key string, bfd *bfd.SingleHopBFD) (dependencies []api.Dependency) {
 	return []api.Dependency {
 		Label:	interfaceDep,
-		Key:	interfaces.InterfaceKey(session.interface)
+		Key:	interfaces.InterfaceKey(bfd.BfdInterface)
 	}
 }
 
