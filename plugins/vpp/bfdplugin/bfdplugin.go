@@ -24,7 +24,6 @@ import (
 	"go.ligato.io/cn-infra/v2/health/statuscheck"
 	"go.ligato.io/cn-infra/v2/infra"
 	"go.ligato.io/cn-infra/v2/utils/safeclose"
-	"go.ligato.io/cn-infra/v2/datasync"
 
 	"go.ligato.io/vpp-agent/v3/plugins/govppmux"
 	kvs "go.ligato.io/vpp-agent/v3/plugins/kvscheduler/api"
@@ -59,7 +58,6 @@ type Deps struct {
 	VPP         govppmux.API
 	IfPlugin    ifplugin.API
 	StatusCheck statuscheck.PluginStatusWriter // optional
-	Publisher	datasync.KeyProtoValWriter
 }
 
 // Init initializes BFD plugin.
