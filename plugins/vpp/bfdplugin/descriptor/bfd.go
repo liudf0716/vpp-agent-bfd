@@ -91,12 +91,12 @@ func NewBFDDescriptor(bfdHandler vppcalls.BFDVppAPI, kvscheduler kvs.KVScheduler
 }
 
 // WatchBFDNotifications starts watching for BFD notifications.
-func (d *BFDDescriptor) WatchBFDNotifications(ctx context.Context) {
+func (d *BFDDescriptor) WatchBFDNotifications(ctx context.Context, eventsCh chan<- *bfd.SessionDetails) {
 	var childCtx context.Context
 	childCtx, d.cancel = context.WithCancel(ctx)
 
 	d.wg.Add(1)
-	go d.watchBFDNotifications(childCtx)
+	go d.watchBFDNotifications(childCtx, eventsCh)
 }
 
 // Close stops watching of BFD notifications.
@@ -272,7 +272,7 @@ func (d *BFDDescriptor) Dependencies(key string, bfd *bfd.SingleHopBFD) (depende
 }
 
 // watchBFDNotifications watches and processes BFD notifiction
-func (d *BFDDescriptor) watchBFDNotifications(ctx context.Context) {
+func (d *BFDDescriptor) watchBFDNotifications(ctx context.Context, eventsCh chan<- *bfd.SessionDetails) {
 	defer d.wg.Done()
 	d.log.Debug("Started watcher on BFD notifications")
 
@@ -302,12 +302,30 @@ func (d *BFDDescriptor) watchBFDNotifications(ctx context.Context) {
 				DestinationAddress: details.PeerAddr,
 				State:              bfd.SessionDetails_BfdState(details.BfdState),
 			}
+			
 			if err := d.kvscheduler.PushSBNotification(kvs.KVWithMetadata{
 				Key:      bfd.BFDEventKey(ifName),
 				Value:    session,
 				Metadata: session,
 			}); err != nil {
 				d.log.Error(err)
+			}
+			
+			// try to send out
+			select {
+			case eventsCh <- session:
+				//send ok
+			case <-ctx.Done():
+				return
+			default:
+				go func() {
+					select {
+					case eventsCh <- session:
+						// sent ok
+					case <-time.After(time.Second):
+						d.log.Warnf("unable to deliver bfd event, dropping it: %+v", session)
+					}
+				}()
 			}
 		case <-ctx.Done():
 			return
