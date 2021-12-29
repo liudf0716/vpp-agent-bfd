@@ -32,6 +32,7 @@ import (
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/descriptor/adapter"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/ifplugin"
+	bfd "go.ligato.io/vpp-agent/v3/proto/ligato/vpp/bfd"
 
 	_ "go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/vppcalls/vpp2009"
 )
