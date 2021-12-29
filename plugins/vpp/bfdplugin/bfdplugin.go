@@ -118,7 +118,7 @@ func (p *BFDPlugin) watchBFDNotifictions(ctx context.Context)  {
 	
 	for {
 		select {
-		case notif := <-d.bfdEvents:
+		case notif := <-p.bfdEvents:
 			p.publishLock.Lock()
 			key := bfd.BFDEventPubKey(notif.Interface, notif.DestinationAddress)
 			p.Log.Debugf("Publish bfd event: %+v", notif)
