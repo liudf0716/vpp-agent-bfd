@@ -25,6 +25,7 @@ import (
 	"go.ligato.io/cn-infra/v2/infra"
 	"go.ligato.io/cn-infra/v2/utils/safeclose"
 
+	"go.ligato.io/cn-infra/v2/datasync"
 	"go.ligato.io/vpp-agent/v3/plugins/govppmux"
 	kvs "go.ligato.io/vpp-agent/v3/plugins/kvscheduler/api"
 	"go.ligato.io/vpp-agent/v3/plugins/vpp/bfdplugin/descriptor"
@@ -43,8 +44,10 @@ type BFDPlugin struct {
 	bfdDescriptor     *descriptor.BFDDescriptor
 	bfdEchoDescriptor *descriptor.BfdEchoDescriptor
 
-	bfdIDSeq uint32
-
+	bfdIDSeq 		uint32
+	publishLock		sync.Mutex
+	bfdEvents		chan *bfd.SessionDetails
+	
 	// go routine management
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -58,6 +61,7 @@ type Deps struct {
 	VPP         govppmux.API
 	IfPlugin    ifplugin.API
 	StatusCheck statuscheck.PluginStatusWriter // optional
+	EtcdPublisher	datasync.KeyProtoValWriter
 }
 
 // Init initializes BFD plugin.
@@ -79,15 +83,19 @@ func (p *BFDPlugin) Init() error {
 		return err
 	}
 
-	p.bfdDescriptor.WatchBFDNotifications(p.ctx)
+	p.bfdEvents = make(chan *bfd.SessionDetails, 10)
 	
-	p.
+	// Watch for bfd event
+	p.wg.Add(1)
+	go p.watchBFDNotifictions(p.ctx)
 	
 	return nil
 }
 
 // AfterInit registers plugin with StatusCheck.
 func (p *BFDPlugin) AfterInit() error {
+	p.bfdDescriptor.WatchBFDNotifications(p.ctx, p.bfdEvents)
+	
 	if p.StatusCheck != nil {
 		p.StatusCheck.Register(p.PluginName, nil)
 	}
@@ -102,4 +110,28 @@ func (p *BFDPlugin) Close() error {
 
 	// close all resources
 	return safeclose.Close(p.bfdDescriptor)
+}
+
+func (p *BFDPlugin) watchBFDNotifictions(ctx context.Context)  {
+	defer p.wg.Done()
+	
+	for {
+		select {
+		case notif := <-d.bfdEvents:
+			p.publishLock.Lock()
+			key := bfd.BFDEventPubKey(notif.Interface, notif.DestinationAddress)
+			p.Log.Debugf("Publish bfd event: %+v", notif)
+			
+			err := p.EtcdPublisher.Put(key, notif)
+			if err != nil {
+				p.Log.Error(err)
+			}
+			
+			p.publishLock.Unlock()
+		case <-ctx.Done():
+			// stop watching for bfd notifications 
+			p.Log.Debug("Bfd state VPP notification watcher stopped")
+			return
+		}
+	}
 }
