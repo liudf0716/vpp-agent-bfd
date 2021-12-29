@@ -43,3 +43,7 @@ const (
 func BFDEventKey(ifName string) string {
 	return BFDEventKeyPrefix + ifName
 }
+
+func BFDEventPubKey(ifName, dst string) string {
+	return BFDEventKeyPrefix + ifName + "/" + dst
+}
