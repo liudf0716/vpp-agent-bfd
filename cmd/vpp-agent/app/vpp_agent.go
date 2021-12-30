@@ -127,6 +127,7 @@ func New() *VPPAgent {
 	linux_ifplugin.DefaultPlugin.VppIfPlugin = &ifplugin.DefaultPlugin
 	ifplugin.DefaultPlugin.LinuxIfPlugin = &linux_ifplugin.DefaultPlugin
 	ifplugin.DefaultPlugin.NsPlugin = &linux_nsplugin.DefaultPlugin
+	bfdplugin.DefaultPlugin.EtcdPublisher = etcdDataSync
 
 	vpp := DefaultVPP()
 	linux := DefaultLinux()
