@@ -267,8 +267,8 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 
 	for _, details := range bfdSessionDetails {
 		bfds = append(bfds, adapter.BFDKVWithMetadata{
-			Key:   acl.Key(ipACL.ACL.Name),
-			Value: ipACL.ACL,
+			Key:   bfd.Key(details.Name),
+			Value: details,
 			Metadata: nil,
 			Origin: api.FromNB,
 		})
