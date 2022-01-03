@@ -259,6 +259,21 @@ func (d *BFDDescriptor) Delete(key string, bfd *bfd.SingleHopBFD, metadata inter
 // Retrieve returns list of configured BFDs with metadata
 // TODO
 func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []adapter.BFDKVWithMetadata, err error) {
+	// Retrieve VPP configuration.
+	bfdSessionDetails, err := d.bfdHandler.DumpBfdSessions()
+	if err != nil {
+		return nil, errors.Errorf("failed to dump bfd session detail: %v", err)
+	}
+
+	for _, details := range bfdSessionDetails {
+		bfds = append(bfds, adapter.BFDKVWithMetadata{
+			Key:   acl.Key(ipACL.ACL.Name),
+			Value: ipACL.ACL,
+			Metadata: nil,
+			Origin: api.FromNB,
+		})
+	}
+
 	return
 }
 
