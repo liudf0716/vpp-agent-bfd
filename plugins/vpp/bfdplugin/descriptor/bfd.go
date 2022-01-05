@@ -266,9 +266,13 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 	}
 
 	for _, session := range bfdSessionDetails.Session {
+		shBFD := &bfd.SingleHopBFD{}
+		shBFD.BfdInterface 		= session.Interface
+		shBFD.DestinationAddress 	= session.DestinationAddress
+		shBFD.SourceAddress		= session.SourceAddress
 		bfds = append(bfds, adapter.BFDKVWithMetadata{
 			Key:   bfd.BFDEventPubKey(session.Interface, session.DestinationAddress),
-			Value: session,
+			Value: shBFD,
 			Origin: kvs.FromNB,
 		})
 	}
