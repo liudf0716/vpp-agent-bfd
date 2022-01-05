@@ -269,7 +269,7 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 		bfds = append(bfds, adapter.BFDKVWithMetadata{
 			Key:   bfd.BFDEventPubKey(session.Interface, session.DestinationAddress),
 			Value: session,
-			Origin: api.FromNB,
+			Origin: kvs.FromNB,
 		})
 	}
 
