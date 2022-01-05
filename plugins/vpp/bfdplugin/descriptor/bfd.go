@@ -265,7 +265,7 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 		return nil, errors.Errorf("failed to dump bfd session detail: %v", err)
 	}
 
-	for _, session := range bfdSessionDetails.session {
+	for _, session := range bfdSessionDetails.Session {
 		bfds = append(bfds, adapter.BFDKVWithMetadata{
 			Key:   bfd.BFDEventPubKey(session.Interface, session.DestinationAddress),
 			Value: session,
