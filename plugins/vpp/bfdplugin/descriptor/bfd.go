@@ -270,7 +270,7 @@ func (d *BFDDescriptor) Retrieve(corrlate []adapter.BFDKVWithMetadata) (bfds []a
 			BfdInterface:	session.Interface,
 			SourceAddress:	session.SourceAddress,
 			DestinationAddress:	session.DestinationAddress,
-			Key:		&bfdSingleHopBFD_Key{
+			Key:		&bfd.SingleHopBFD_Key{
 				AuthKeyIndex:	session.KeyId,
 			},
 		}
