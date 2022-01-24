@@ -18,7 +18,7 @@ require (
 	github.com/fsouza/go-dockerclient v1.6.6
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-errors/errors v1.0.1
-	github.com/goccy/go-graphviz v0.0.6
+	github.com/goccy/go-graphviz v0.0.9
 	github.com/goccy/go-yaml v1.8.0
 	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.2
@@ -33,7 +33,7 @@ require (
 	github.com/mitchellh/go-ps v0.0.0-20170309133038-4fdf99ab2936
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/namsral/flag v1.7.4-pre
-	github.com/olekukonko/tablewriter v0.0.4
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/onsi/gomega v1.10.3
 	github.com/opencontainers/runc v1.0.0-rc5 // indirect
 	github.com/pkg/errors v0.9.1
@@ -41,7 +41,7 @@ require (
 	github.com/prometheus/client_golang v0.9.3
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v0.0.7
-	github.com/spf13/pflag v1.0.3
+	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.4.0
 	github.com/unrolled/render v0.0.0-20180914162206-b9786414de4d
 	github.com/vishvananda/netlink v0.0.0-20180910184128-56b1bd27a9a3
