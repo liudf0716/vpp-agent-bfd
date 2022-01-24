@@ -18,7 +18,7 @@ require (
 	github.com/fsouza/go-dockerclient v1.6.6
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-errors/errors v1.0.1
-	github.com/goccy/go-graphviz v0.0.6
+	github.com/goccy/go-graphviz v0.0.9
 	github.com/goccy/go-yaml v1.8.0
 	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.2
@@ -28,7 +28,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.11.3 // indirect
 	github.com/hashicorp/go-uuid v1.0.1 // indirect
 	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0
-	github.com/jhump/protoreflect v1.7.0
+	github.com/jhump/protoreflect v1.10.1
 	github.com/lunixbochs/struc v0.0.0-20200521075829-a4cb8d33dbbe
 	github.com/mitchellh/go-ps v0.0.0-20170309133038-4fdf99ab2936
 	github.com/mitchellh/mapstructure v1.1.2
@@ -41,7 +41,7 @@ require (
 	github.com/prometheus/client_golang v0.9.3
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v0.0.7
-	github.com/spf13/pflag v1.0.3
+	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.4.0
 	github.com/unrolled/render v0.0.0-20180914162206-b9786414de4d
 	github.com/vishvananda/netlink v0.0.0-20180910184128-56b1bd27a9a3
@@ -57,5 +57,5 @@ require (
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
 	google.golang.org/genproto v0.0.0-20200601130524-0f60399e6634 // indirect
 	google.golang.org/grpc v1.29.1
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/protobuf v1.25.1-0.20200805231151-a709e31e5d12
 )
