@@ -33,7 +33,7 @@ require (
 	github.com/mitchellh/go-ps v0.0.0-20170309133038-4fdf99ab2936
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/namsral/flag v1.7.4-pre
-	github.com/olekukonko/tablewriter v0.0.4
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/onsi/gomega v1.10.3
 	github.com/opencontainers/runc v1.0.0-rc5 // indirect
 	github.com/pkg/errors v0.9.1
