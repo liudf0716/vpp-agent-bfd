@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package ligato.linux.sswan;
+
+option go_package = "go.ligato.io/vpp-agent/v3/proto/ligato/linux/sswan;linux_sswan";
+
+message Sswan {
+        string name = 1;
+        string description = 2;
+        
+        message SswanConn {
+                string conn_name = 1;
+                string local_addrs = 2;
+                string remote_addrs = 3;
+                string local_ts = 4;
+                string remote_ts = 5;
+        }
+        
+        repeated SswanConn connection = 3;
+}
