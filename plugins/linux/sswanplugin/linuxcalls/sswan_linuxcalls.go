@@ -5,10 +5,11 @@ import (
   "strings"
 )
 
-type SswanHandler struct {
+
+func (h *SswanHandler) CreateConnection() error {
+  return nil
 }
 
-func (h *SswanHandler) Init() error {
-  var err error
-  return err
+func (h *SswanHandler) DeleteConnection() error {
+  return nil
 }
