@@ -1,18 +1,10 @@
 package linuxcalls
 
-type SswanAPI interface {
-  Init()  error
-  
-  SswanAPIWrite
-  SswanAPIRead
-}
-
-type SswanAPIWrite interface {
-}
-
-type SswanAPIRead interface {
+type sswanHandler interface {
+  CreateConnection()
+  DeleteConnection
 }
 
 func NewSswanHandler() *SswanHandler {
-  return &SswanHandler{}
+  return &sswanHandler{}
 }
