@@ -20,15 +20,15 @@ require (
 	github.com/go-errors/errors v1.0.1
 	github.com/goccy/go-graphviz v0.0.9
 	github.com/goccy/go-yaml v1.8.0
-	github.com/golang/protobuf v1.4.2
-	github.com/google/go-cmp v0.5.2
+	github.com/golang/protobuf v1.5.2
+	github.com/google/go-cmp v0.5.5
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.11.3 // indirect
 	github.com/hashicorp/go-uuid v1.0.1 // indirect
 	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0
-	github.com/jhump/protoreflect v1.7.0
+	github.com/jhump/protoreflect v1.14.0
 	github.com/lunixbochs/struc v0.0.0-20200521075829-a4cb8d33dbbe
 	github.com/mitchellh/go-ps v0.0.0-20170309133038-4fdf99ab2936
 	github.com/mitchellh/mapstructure v1.1.2
@@ -55,7 +55,7 @@ require (
 	golang.org/x/net v0.0.0-20201006153459-a7d1128ccaa0
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
-	google.golang.org/genproto v0.0.0-20200601130524-0f60399e6634 // indirect
-	google.golang.org/grpc v1.29.1
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/grpc v1.38.0
+	google.golang.org/grpc/examples v0.0.0-20221026183349-3c09650e0524 // indirect
+	google.golang.org/protobuf v1.27.1
 )
